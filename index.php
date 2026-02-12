@@ -28,28 +28,30 @@ require_login();
 
 $context = context_system::instance();
 
+// Isso o que faz?
+$PAGE->set_context($context);
+
 // Isso cria a URL única do código, a página do bloco.
 $PAGE->set_url(new moodle_url('/local/greetings/index.php'));
 
 // Isso o que faz?
-$PAGE->set_context($context);
-
-// Isso o que faz?
 $PAGE->set_pagelayout('standard');
 
+// Isso faz o nome da página lá em cima seja o nome do title.
+$PAGE->set_title($title);
+
+$PAGE->set_heading($title);
+
 // Isso o que faz?
 $title = get_string('pluginname', 'local_greetings');
 
-// MEU CÓDIGO DO MOODLE.
-
+// Isso define o nome do título como o nome do plugin referenciado, nesse caso o local_greetings.
 $title = get_string('pluginname', 'local_greetings');
-
-$PAGE->set_title($title);
-$PAGE->set_heading($title);
 
 // Aqui acaba o código alterado.
 
 // Isso finaliza a inicialização DOM e começa a rodar o conteúdo HTML de fato.
+// O output é uma variável global que serve para gerar o conteúdo html.
 echo $OUTPUT->header();
 
 // Isso o que faz?
@@ -58,5 +60,6 @@ echo $OUTPUT->heading('Olá, Moodle!');
 // Isso o que faz?
 echo html_writer::div('Meu plugin local_greetings está funcionando.');
 
-// Isso o que faz?
+// Isso var criar o footer que é um botão com um ponto de interrogação.
+// SEMPRE DEVE ESTAR POR ÚLTIMO.
 echo $OUTPUT->footer();
