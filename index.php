@@ -64,10 +64,16 @@ echo $OUTPUT->header();
 if (isloggedin()) {
     // Esse trecho apenas acontece se o usuário estiver logado.
     // Um echo para usar o nome completo do usuário para dar oi, comando fullname($USER).
-    echo '<h2>Olá, ' . fullname($USER) . '</h2>';
+    // echo '<h2>Olá, ' . fullname($USER) . '</h2>'; trocado!
+
+    // Substituído por código mustache.
+    $usergreeting = 'Olá, ' . fullname($USER);
 } else {
     // Esse echo cria um h2 para o texto que eu escrevi.
-    echo '<h2>Olá usuário </h2>';
+    // echo '<h2>Olá usuário </h2>'; trocado!
+
+    // Substituído por código mustache.
+    $usergreeting = 'Olá, Usuário';
 }
 
 // Isso o que faz?
@@ -75,6 +81,10 @@ echo $OUTPUT->heading('Olá, Moodle!');
 
 // Isso o que faz?
 echo html_writer::div('Meu plugin local_greetings está funcionando.');
+
+// Isso passa a variável $usergreeting para o arquivo greeting_message.
+$templatedata = ['usergreeting' => $usergreeting];
+echo $OUTPUT->render_from_template('local_greetings/greeting_message', $templatedata);
 
 // Isso var criar o footer que é um botão com um ponto de interrogação.
 // SEMPRE DEVE ESTAR POR ÚLTIMO.
