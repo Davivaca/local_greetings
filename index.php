@@ -67,13 +67,15 @@ if (isloggedin()) {
     // echo '<h2>Olá, ' . fullname($USER) . '</h2>'; trocado!
 
     // Substituído por código mustache.
-    $usergreeting = 'Olá, ' . fullname($USER);
+    // $usergreeting = 'Olá, ' . fullname($USER); trocado!
+    $usergreeting = get_string('greetingloggedinuser', 'local_greetings', fullname($USER));
 } else {
     // Esse echo cria um h2 para o texto que eu escrevi.
     // echo '<h2>Olá usuário </h2>'; trocado!
 
     // Substituído por código mustache.
-    $usergreeting = 'Olá, Usuário';
+    // $usergreeting = 'Olá, Usuário';trocado!
+    $usergreeting = get_string('greeting_user', 'local_greetings' );
 }
 
 // Isso o que faz?
