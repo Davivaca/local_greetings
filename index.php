@@ -31,6 +31,9 @@
  */
 require('../../config.php');
 
+// Pegando as coisas do arquivo lib.php!
+require_once($CFG->dirroot. '/local/greetings/lib.php');
+
 require_login();
 
 $context = context_system::instance();
@@ -49,9 +52,6 @@ $PAGE->set_title($title);
 
 $PAGE->set_heading($title);
 
-// Isso o que faz?
-$title = get_string('pluginname', 'local_greetings');
-
 // Isso define o nome do título como o nome do plugin referenciado, nesse caso o local_greetings.
 $title = get_string('pluginname', 'local_greetings');
 
@@ -68,7 +68,8 @@ if (isloggedin()) {
 
     // Substituído por código mustache.
     // $usergreeting = 'Olá, ' . fullname($USER); trocado!
-    $usergreeting = get_string('greetingloggedinuser', 'local_greetings', fullname($USER));
+    // $usergreeting = get_string('greetingloggedinuser', 'local_greetings', fullname($USER)); trocado!
+    $usergreeting = local_greetings_get_greeting($USER);
 } else {
     // Esse echo cria um h2 para o texto que eu escrevi.
     // echo '<h2>Olá usuário </h2>'; trocado!
