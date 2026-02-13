@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/**
+ * Comandos importantes para lembrar
+ * isloggedin() determina se um usuário está logado ou não
+ * isguestuser()
+ * requirelogin() checa se o usuário está logado, se não estiver manda de volta para apágina de login
+ * fullname() retorna o nome completo do usuário
+ */
 require('../../config.php');
 
 require_login();
@@ -53,6 +60,15 @@ $title = get_string('pluginname', 'local_greetings');
 // Isso finaliza a inicialização DOM e começa a rodar o conteúdo HTML de fato.
 // O output é uma variável global que serve para gerar o conteúdo html.
 echo $OUTPUT->header();
+
+if (isloggedin()) {
+    // Esse trecho apenas acontece se o usuário estiver logado.
+    // Um echo para usar o nome completo do usuário para dar oi, comando fullname($USER).
+    echo '<h2>Olá, ' . fullname($USER) . '</h2>';
+} else {
+    // Esse echo cria um h2 para o texto que eu escrevi.
+    echo '<h2>Olá usuário </h2>';
+}
 
 // Isso o que faz?
 echo $OUTPUT->heading('Olá, Moodle!');
