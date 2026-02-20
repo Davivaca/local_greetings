@@ -29,66 +29,63 @@
  * requirelogin() checa se o usuário está logado, se não estiver manda de volta para apágina de login
  * fullname() retorna o nome completo do usuário
  */
-require('../../config.php');
 
-// Pegando as coisas do arquivo lib.php!
-require_once($CFG->dirroot. '/local/greetings/lib.php');
+require('../../config.php');
+require_once($CFG->dirroot . '/local/greetings/lib.php');
+require_once($CFG->dirroot . '/local/greetings/classes/form/message_form.php');
 
 require_login();
 
 $context = context_system::instance();
-
-// Isso o que faz?
 $PAGE->set_context($context);
-
-// Isso cria a URL única do código, a página do bloco.
 $PAGE->set_url(new moodle_url('/local/greetings/index.php'));
-
-// Isso o que faz?
 $PAGE->set_pagelayout('standard');
 
-// Isso faz o nome da página lá em cima seja o nome do title.
-$PAGE->set_title($title);
-
-$PAGE->set_heading($title);
-
-// Isso define o nome do título como o nome do plugin referenciado, nesse caso o local_greetings.
+// Isso define o nome do título como o nome do plugin
 $title = get_string('pluginname', 'local_greetings');
 
-// Aqui acaba o código alterado.
+$PAGE->set_title($title);
+$PAGE->set_heading($title);
 
-// Isso finaliza a inicialização DOM e começa a rodar o conteúdo HTML de fato.
-// O output é uma variável global que serve para gerar o conteúdo html.
+// Adição de código da classe forms
+$messageform = new \local_greetings\form\message_form();
+
+// Isso finaliza a inicialização DOM e começa a rodar o conteúdo HTML
 echo $OUTPUT->header();
 
-if (isloggedin()) {
-    // Esse trecho apenas acontece se o usuário estiver logado.
-    // Um echo para usar o nome completo do usuário para dar oi, comando fullname($USER).
-    // echo '<h2>Olá, ' . fullname($USER) . '</h2>'; trocado!
+if ($messageform->is_cancelled()) {
 
-    // Substituído por código mustache.
-    // $usergreeting = 'Olá, ' . fullname($USER); trocado!
-    // $usergreeting = get_string('greetingloggedinuser', 'local_greetings', fullname($USER)); trocado!
-    $usergreeting = local_greetings_get_greeting($USER);
+    redirect(new moodle_url('/local/greetings/index.php'));
+
+} else if ($fromform = $messageform->get_data()) {
+
+    echo $OUTPUT->notification('Mensagem enviada com sucesso!', 'notifysuccess');
+    echo html_writer::div('Você escreveu: ' . $fromform->message);
+
 } else {
-    // Esse echo cria um h2 para o texto que eu escrevi.
-    // echo '<h2>Olá usuário </h2>'; trocado!
 
-    // Substituído por código mustache.
-    // $usergreeting = 'Olá, Usuário';trocado!
-    $usergreeting = get_string('greeting_user', 'local_greetings' );
+    if (isloggedin()) {
+        $usergreeting = local_greetings_get_greeting($USER);
+    } else {
+        $usergreeting = get_string('greeting_user', 'local_greetings');
+    }
+
+    echo $OUTPUT->heading('Olá, Moodle!');
+    echo html_writer::div('Meu plugin local_greetings está funcionando.');
+
+    $templatedata = ['usergreeting' => $usergreeting];
+    echo $OUTPUT->render_from_template('local_greetings/greeting_message', $templatedata);
+
+    // Isso tambem e novo
+    $messageform->display();
+
+    if($data = $messageform->get_data()) {
+        $message = required_param('message', PARAM_TEXT);
+
+        echo $OUTPUT->heading($message, 4);
+    }
+
 }
 
-// Isso o que faz?
-echo $OUTPUT->heading('Olá, Moodle!');
-
-// Isso o que faz?
-echo html_writer::div('Meu plugin local_greetings está funcionando.');
-
-// Isso passa a variável $usergreeting para o arquivo greeting_message.
-$templatedata = ['usergreeting' => $usergreeting];
-echo $OUTPUT->render_from_template('local_greetings/greeting_message', $templatedata);
-
-// Isso var criar o footer que é um botão com um ponto de interrogação.
 // SEMPRE DEVE ESTAR POR ÚLTIMO.
 echo $OUTPUT->footer();

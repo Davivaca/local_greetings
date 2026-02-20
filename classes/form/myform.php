@@ -2,7 +2,11 @@
 // moodleform is defined in formslib.php.
 // Essa linha carrega o arquivo que contem a classe moodleform.
 // $CFG->libdir → pasta /lib do Moodle.
-require_once("$CFG->libdir/formslib.php");
+namespace local_greetings\form;
+
+defined('MOODLE_INTERNAL') || die();
+
+require_once($GLOBALS['CFG']->libdir . '/formslib.php');
 
 // Esse class myform diz que a classe criada myform é um tipo de formulario moodle
 class myform extends moodleform {
@@ -30,4 +34,25 @@ class myform extends moodleform {
     function validation($data, $files) {
         return [];
     }
+}
+// Instantiate the myform form from within the plugin.
+$mform = new \plugintype_pluginname\form\myform();
+
+// Form processing and displaying is done here.
+if ($mform->is_cancelled()) {
+    // If there is a cancel element on the form, and it was pressed,
+    // then the `is_cancelled()` function will return true.
+    // You can handle the cancel operation here.
+} else if ($fromform = $mform->get_data()) {
+    // When the form is submitted, and the data is successfully validated,
+    // the `get_data()` function will return the data posted in the form.
+} else {
+    // This branch is executed if the form is submitted but the data doesn't
+    // validate and the form should be redisplayed or on the first display of the form.
+   
+    // Set default data (if any).
+    $mform->set_data($toform);
+   
+    // Display the form.
+    $mform->display();
 }
