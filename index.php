@@ -41,16 +41,29 @@ $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/greetings/index.php'));
 $PAGE->set_pagelayout('standard');
 
-// Isso define o nome do título como o nome do plugin
+// Isso define o nome do título como o nome do plugin.
 $title = get_string('pluginname', 'local_greetings');
 
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
-// Adição de código da classe forms
+// Adição de código da classe forms.
 $messageform = new \local_greetings\form\message_form();
 
-// Isso finaliza a inicialização DOM e começa a rodar o conteúdo HTML
+// ISSO EM TEORIA SALVA A FORMA INPUT NA DATABASE
+if ($data = $messageform->get_data()) { //ESSA LINHA TESTA SE O FORMULÁRIO FOI SUBMETIDO.
+    $message = required_param('message', PARAM_TEXT);
+
+    if (!empty($message)) {
+        $record = new stdClass;
+        $record->message = $message;
+        $record->timecreated = time();
+
+        $DB->insert_record('local_greetings_messages', $record);// ESSA LINHA AQUI É O QUE FAZ O INSERT NA BASE.
+    }
+}
+
+// Isso finaliza a inicialização DOM e começa a rodar o conteúdo HTML.
 echo $OUTPUT->header();
 
 if ($messageform->is_cancelled()) {
@@ -76,15 +89,13 @@ if ($messageform->is_cancelled()) {
     $templatedata = ['usergreeting' => $usergreeting];
     echo $OUTPUT->render_from_template('local_greetings/greeting_message', $templatedata);
 
-    // Isso tambem e novo
+    // Isso tambem e novo.
     $messageform->display();
 
-    if($data = $messageform->get_data()) {
-        $message = required_param('message', PARAM_TEXT);
+    $messages = $DB->get_records('local_greetings_messages'); // This line fetches all the greeting messages from the table local_greetings_messages.
 
-        echo $OUTPUT->heading($message, 4);
-    }
-
+    $templatedata = ['messages' => array_values($messages)];// In the above code, we are using the global output renderer to render our messages.mustache template.
+    echo $OUTPUT->render_from_template('local_greetings/messages', $templatedata);// The $templatedata variable provides the data that will be used in the template file. In this case it is an array of messages.
 }
 
 // SEMPRE DEVE ESTAR POR ÚLTIMO.
