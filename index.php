@@ -58,6 +58,7 @@ if ($data = $messageform->get_data()) { //ESSA LINHA TESTA SE O FORMULÁRIO FOI 
         $record = new stdClass;
         $record->message = $message;
         $record->timecreated = time();
+        $record->userid = $USER->id; // Isso salva o id do usuário que está fazendo o post
 
         $DB->insert_record('local_greetings_messages', $record);// ESSA LINHA AQUI É O QUE FAZ O INSERT NA BASE.
     }
@@ -92,7 +93,15 @@ if ($messageform->is_cancelled()) {
     // Isso tambem e novo.
     $messageform->display();
 
-    $messages = $DB->get_records('local_greetings_messages'); // This line fetches all the greeting messages from the table local_greetings_messages.
+$userfields = \core_user\fields::for_name()->with_identity($context); // Começa aqui.
+$userfieldssql = $userfields->get_sql('u');
+
+$sql = "SELECT m.id, m.message, m.timecreated, m.userid {$userfieldssql->selects}
+    FROM {local_greetings_messages} m
+    LEFT JOIN {user} u ON u.id = m.userid
+    ORDER BY timecreated DESC";
+
+$messages = $DB->get_records_sql($sql); // This line of code fetches all the greeting messages from the table local_greetings_messages.
 
     $templatedata = ['messages' => array_values($messages)];// In the above code, we are using the global output renderer to render our messages.mustache template.
     echo $OUTPUT->render_from_template('local_greetings/messages', $templatedata);// The $templatedata variable provides the data that will be used in the template file. In this case it is an array of messages.

@@ -30,6 +30,7 @@ $string['greetingloggedinuser'] = 'Greetings, {$a}. ';
 $string['greetinguser'] = 'Greetings, user. ';
 
 // Adicionando a mensagem para outras linguas.
+$string['postedby'] = 'Posted by {$a}.';//Isso adiciona o nome do usuario.
 $string['greetinguserau'] = 'Hello, {$a}.';
 $string['greetinguseres'] = 'Hola, {$a}.';
 $string['greetinguserfj'] = 'Bula, {$a}.';
