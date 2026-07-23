@@ -50,15 +50,16 @@ $PAGE->set_heading($title);
 // Adição de código da classe forms.
 $messageform = new \local_greetings\form\message_form();
 
-// ISSO EM TEORIA SALVA A FORMA INPUT NA DATABASE
-if ($data = $messageform->get_data()) { //ESSA LINHA TESTA SE O FORMULÁRIO FOI SUBMETIDO.
+// ISSO EM TEORIA SALVA A FORMA INPUT NA DATABASE.
+if ($data = $messageform->get_data()) {
+    // This line checks whether the form has been submitted.
     $message = required_param('message', PARAM_TEXT);
 
     if (!empty($message)) {
-        $record = new stdClass;
+        $record = new stdClass();
         $record->message = $message;
         $record->timecreated = time();
-        $record->userid = $USER->id; // Isso salva o id do usuário que está fazendo o post
+        $record->userid = $USER->id; // Isso salva o id do usuário que está fazendo o post.
 
         $DB->insert_record('local_greetings_messages', $record);// ESSA LINHA AQUI É O QUE FAZ O INSERT NA BASE.
     }
@@ -68,16 +69,11 @@ if ($data = $messageform->get_data()) { //ESSA LINHA TESTA SE O FORMULÁRIO FOI 
 echo $OUTPUT->header();
 
 if ($messageform->is_cancelled()) {
-
     redirect(new moodle_url('/local/greetings/index.php'));
-
 } else if ($fromform = $messageform->get_data()) {
-
     echo $OUTPUT->notification('Mensagem enviada com sucesso!', 'notifysuccess');
     echo html_writer::div('Você escreveu: ' . $fromform->message);
-
 } else {
-
     if (isloggedin()) {
         $usergreeting = local_greetings_get_greeting($USER);
     } else {
@@ -93,18 +89,23 @@ if ($messageform->is_cancelled()) {
     // Isso tambem e novo.
     $messageform->display();
 
-$userfields = \core_user\fields::for_name()->with_identity($context); // Começa aqui.
-$userfieldssql = $userfields->get_sql('u');
+    $userfields = \core_user\fields::for_name()->with_identity($context); // Começa aqui.
+    $userfieldssql = $userfields->get_sql('u');
 
-$sql = "SELECT m.id, m.message, m.timecreated, m.userid {$userfieldssql->selects}
+    $sql = "SELECT m.id, m.message, m.timecreated, m.userid {$userfieldssql->selects}
     FROM {local_greetings_messages} m
     LEFT JOIN {user} u ON u.id = m.userid
     ORDER BY timecreated DESC";
 
-$messages = $DB->get_records_sql($sql); // This line of code fetches all the greeting messages from the table local_greetings_messages.
+    // Fetch all greeting messages from the database.
+    $messages = $DB->get_records_sql($sql);
 
-    $templatedata = ['messages' => array_values($messages)];// In the above code, we are using the global output renderer to render our messages.mustache template.
-    echo $OUTPUT->render_from_template('local_greetings/messages', $templatedata);// The $templatedata variable provides the data that will be used in the template file. In this case it is an array of messages.
+    $templatedata = ['messages' => array_values($messages)];
+    // Print output.
+    echo $OUTPUT->render_from_template('local_greetings/messages', $templatedata);
+    // In the above code.
+    // The $templatedata variable provides
+    // The data that will be used in the template file.
 }
 
 // SEMPRE DEVE ESTAR POR ÚLTIMO.

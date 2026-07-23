@@ -29,6 +29,11 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Form for submitting greeting messages.
+ *
+ * @package    local_greetings
+ */
 class message_form extends \moodleform {
     /**
      * Define the form.
